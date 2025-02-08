@@ -27,6 +27,9 @@ jobs:
       with:
         node-version: '20.x'
 
+    - name: Install Netlify
+      run: npm install netlify-cli@17.10.1 -g
+
     # Install dependencies
     - name: Install dependencies
       run: npm install
@@ -41,15 +44,9 @@ jobs:
 
     # Deploy to Netlify
     - name: Netlify Deploy
-      uses: jsmrcaga/action-netlify-deploy@v2.0.0
-      with:
-        # Auth token to use with Netlify
-        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-        # Your Netlify site ID
-        NETLIFY_SITE_ID:  ${{ secrets.NETLIFY_SITE_ID }}
-        # Directory where built files are stored (Vite outputs to "dist" by default)
-        build_directory: './dist'
-        # Command to install dependencies
-        install_command: npm install
-        # Command to build the Vite project
-        build_command: npm run build
+      id: netlify_deploy
+        run: |
+          netlify deploy \
+            --dir dist \
+            --site ${{ secrets.NETLIFY_SITE_ID }} \
+            --auth ${{ secrets.NETLIFY_API_TOKEN }}
